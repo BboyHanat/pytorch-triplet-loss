@@ -1,5 +1,5 @@
 train_gpu_config:
-  use_cuda: True
+  use_cuda: False
   gpu_enum:
     - gpu_enum: 0
     - gpu_enum: 1
@@ -21,12 +21,12 @@ train_parameter:
     - format_list: JPG
     - format_list: PNG
 
-  pretrained: True
+  pretrained: False
   model_name: resnet50
   img_size: 512
   epoch: 100
   embedding: 512
-  batch_size: 270
+  batch_size: 12
   data_shuffle: True
   learning_rate: 0.001
   valid_iter_num: 500
@@ -36,9 +36,8 @@ train_parameter:
   scale_resize_pad: True
 
 path_config:
-  image_root: /local/data1/output/label_data
-  train_data_path: datasets/train/train.txt
-  valid_data_path: datasets/validation/val.txt
+  train_data_path: datasets
+  valid_data_path: datasets
   model_save_path: weights
-  pretrained_model: weights/pretrained/densenet121_weights_tf.h5
+  pretrained_model: weights/pretrained/
   lexicon_file_path: datasets/lexicon.txt

@@ -1,7 +1,6 @@
 """
 Name : dataloader.py
 Author  : Hanat
-Contect : hanati@tezign.com
 Time    : 2019-12-18 14:05
 Desc:
 """
@@ -95,7 +94,8 @@ class TripletDataset(Dataset):
         pos_img = self._transforms(pos_img)
         neg_img = self._transforms(neg_img)
         self.seek += 2
-        return torch.tensor([anchor_img, pos_img, neg_img])
+
+        return anchor_img, pos_img, neg_img
 
     def __len__(self):
         return (self.class_num - 1) * self.augment_num

@@ -1,28 +1,23 @@
 """
 Name : train.py
 Author  : Hanat
-Contect : hanati@tezign.com
 Time    : 2019-12-24 14:34
 Desc:
 """
-
-
-
-from configs import conf
-from networks.triplet_loss import TripletLoss
-from networks.model_invoke import NetWorkInvoker
-from utils.dataloader import TripletDataset
-
-import os
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
+from configs import conf
+from utils.dataloader import TripletDataset
+from networks.triplet_loss import TripletLoss
+from networks.model_invoke import NetWorkInvoker
 
 
 
 
-def train(train_data_path, valid_data_path):
+
+def train():
     use_cuda = conf['train_gpu_config']['use_cuda']
     img_size = conf['train_parameter']['img_size']
 
@@ -32,10 +27,13 @@ def train(train_data_path, valid_data_path):
     val_interval_step = conf['train_parameter']['val_interval_step']
     valid_iter_num = conf['train_parameter']['valid_iter_num']
     gpu_enum = [gpu['gpu_enum'] for gpu in conf['train_gpu_config']['gpu_enum']]
-    format_list = [gpu['format_list'] for gpu in conf['train_gpu_config']['format_list']]
+    format_list = [formats['format_list'] for formats in conf['train_parameter']['format_list']]
     embedding = conf['train_parameter']['embedding']
     model_name = conf['train_parameter']['model_name']
     pretrained = conf['train_parameter']['pretrained']
+
+    train_data_path = conf['path_config']['train_data_path']
+    valid_data_path = conf['path_config']['valid_data_path']
 
     net = NetWorkInvoker(model_name=model_name, embedding=embedding, pretrained=pretrained)
     optimizer = optim.Adadelta(net.parameters(), lr=learning_rate)
@@ -73,18 +71,22 @@ def train(train_data_path, valid_data_path):
         valid_step = len(valid_batch_data) - 1
         print('epoch:{}/{}'.format(e, epoch))
         for t in range(train_step):
-            image_triplet = train_iter.next()
+            anchor_img, pos_img, neg_img = train_iter.next()
             if use_cuda:
-                image_triplet = image_triplet.cuda()
-
-            preds_anchor = net(image_triplet[0])
-            preds_pos = net(image_triplet[1])
-            preds_neg = net(image_triplet[1])
+                anchor_img = anchor_img.cuda()
+                pos_img = pos_img.cuda()
+                neg_img = neg_img.cuda()
+            preds_anchor = net(anchor_img)
+            preds_pos = net(pos_img)
+            preds_neg = net(neg_img)
             loss = loss_triplet(preds_anchor, preds_pos, preds_neg)
             loss.backward()
             optimizer.step()
-            print('epoch: {}/{}, step: {}/{}, training_loss: {}'.format(e, epoch, t, train_step, loss))
+            print('epoch: {}/{}, step: {}/{}, training_loss: {} \r'.format(e, epoch, t, train_step, loss))
 
 
 
 
+
+
+train()

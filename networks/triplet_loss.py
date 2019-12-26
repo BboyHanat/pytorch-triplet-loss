@@ -1,7 +1,6 @@
 """
 Name : triplet_loss.py
 Author  : Hanat
-Contect : hanati@tezign.com
 Time    : 2019-12-24 14:33
 Desc:
 """
