@@ -11,6 +11,7 @@ import random
 import numpy as np
 from PIL import Image
 
+import torch
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 
@@ -94,7 +95,7 @@ class TripletDataset(Dataset):
         pos_img = self._transforms(pos_img)
         neg_img = self._transforms(neg_img)
         self.seek += 2
-        return [anchor_img, pos_img, neg_img]
+        return torch.tensor([anchor_img, pos_img, neg_img])
 
     def __len__(self):
         return (self.class_num - 1) * self.augment_num
