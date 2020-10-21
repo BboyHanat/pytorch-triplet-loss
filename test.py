@@ -164,7 +164,7 @@ def test(image_path):
     for cls_index in range(len(class_images_generators)):
         step = len(class_images_generators[cls_index])
         print(step, last_location)
-        sns.scatterplot(x=output_2d[last_location:last_location+step, 0], y=output_2d[last_location:last_location+step, 1], x_bins=500, y_bins=500)
+        sns.scatterplot(x=output_2d[last_location:last_location+step, 0], y=output_2d[last_location:last_location+step, 1], x_bins=1000, y_bins=1000)
         plt.savefig('{}.png'.format(str(cls_index)))
         last_location += step
 
