@@ -35,7 +35,7 @@ def train():
     net = NetWorkInvoker(model_name=model_name, embedding=embedding)
     if pretrained_model:
         net.load_weight(pretrained_model, devices=device)
-    loss_triplet = TripletLoss(margin=5)
+    loss_triplet = torch.nn.TripletMarginLoss(margin=1.0, p=2)
 
     if use_gpu:
         device = torch.device("cuda:0")
