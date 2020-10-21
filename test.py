@@ -9,7 +9,6 @@ import cv2
 import random
 import numpy as np
 import pandas as pd
-from thop import profile
 
 import torch
 import torch.nn.functional as F
