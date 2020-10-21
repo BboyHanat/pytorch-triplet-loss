@@ -142,8 +142,9 @@ def test(image_path):
         cls_outputs = list()
         for img_index in range(len(class_images_generators[cls_index])):
             img_tensor = class_images_generators[cls_index]()
-            img_tensor = img_tensor.to(img_tensor)
             img_tensor = img_tensor.unsqueeze(dim=0)
+            img_tensor = img_tensor.to(device)
+
             print(img_tensor.size(), img_tensor)
             output = net(img_tensor)
             output = output.data.cpu().numpy().squeeze()
