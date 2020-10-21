@@ -89,7 +89,7 @@ def train():
             loss = loss_triplet(preds_anchor, preds_pos, preds_neg)
             loss.backward()
             optimizer.step()
-            print('epoch: {}/{}, step: {}/{}, training_loss: {} \r'.format(e, epoch, t, train_step, loss))
+            print('epoch: {}/{}, step: {}/{}, training_loss: {} \r'.format(e, epoch, t, train_step, loss.data.cpu().numpy().squeeze()))
         if len(gpu_enum) > 1 and use_gpu:
             torch.save(net.module.state_dict(), os.path.join(model_save_path, 'resnet50_feature_model_e{}.pth'.format(e)))
         else:
