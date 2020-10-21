@@ -24,7 +24,7 @@ train_parameter:
   img_size: 512
   epoch: 100
   embedding: 512
-  batch_size: 12
+  batch_size: 20
   data_shuffle: True
   learning_rate: 0.001
   valid_iter_num: 500
