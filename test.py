@@ -137,10 +137,9 @@ def test(image_path):
     net = net.to(device)
     net = net.eval()
     tsne = TSNE(n_components=2, learning_rate=100)
-    data_frame = list()
+
     cls_outputs = list()
     for cls_index in range(len(class_images_generators)):
-
         for img_index in range(len(class_images_generators[cls_index])):
             img_tensor = class_images_generators[cls_index]()
             img_tensor = img_tensor.unsqueeze(dim=0)
@@ -152,15 +151,16 @@ def test(image_path):
     cls_outputs = np.asarray(cls_outputs).squeeze()
     output_2d = tsne.fit_transform(cls_outputs).squeeze()
     print(output_2d.shape)
+
     output_2d[:, 0] = output_2d[:, 0] + np.abs(output_2d[:, 0].min())
     output_2d[:, 0] = output_2d[:, 0] / output_2d[:, 0].max()
-
     output_2d[:, 1] = output_2d[:, 1] + np.abs(output_2d[:, 1].min())
     output_2d[:, 1] = output_2d[:, 1] / output_2d[:, 1].max()
 
     last_location = 0
     for cls_index in range(len(class_images_generators)):
         step = len(class_images_generators[cls_index])
+        print(step)
         sns.scatterplot(x=output_2d[last_location:last_location+step, 0], y=output_2d[last_location:last_location+step, 1])
         last_location += step
 
