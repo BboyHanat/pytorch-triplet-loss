@@ -145,9 +145,9 @@ def test(image_path):
             img_tensor = img_tensor.unsqueeze(dim=0)
             img_tensor = img_tensor.to(device)
 
-            print(img_tensor.size(), img_tensor)
             output = net(img_tensor)
-            output = output.data.cpu().numpy().squeeze()
+            output = output.data.cpu().numpy()
+            print(output.size())
             output_2d = tsne.fit_transform(output).squeeze()
             cls_outputs.append(output_2d)
             print(output_2d).size()
