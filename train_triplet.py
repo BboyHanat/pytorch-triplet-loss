@@ -26,7 +26,7 @@ def train():
     model_name = conf['train_parameter']['model_name']
 
     model_save_path = conf['path_config']['model_save_path']
-    pretrained_model = conf['path_config']['pretrained']
+    pretrained_model = conf['path_config']['pretrained_model']
 
     train_data_path = conf['path_config']['train_data_path']
     valid_data_path = conf['path_config']['valid_data_path']
@@ -78,9 +78,9 @@ def train():
         for t in range(train_step):
             anchor_img, pos_img, neg_img = train_iter.next()
             if use_gpu:
-                anchor_img = anchor_img.cuda()
-                pos_img = pos_img.cuda()
-                neg_img = neg_img.cuda()
+                anchor_img = anchor_img.to(device)
+                pos_img = pos_img.to(device)
+                neg_img = neg_img.to(device)
             preds_anchor = net(anchor_img)
             preds_pos = net(pos_img)
             preds_neg = net(neg_img)
