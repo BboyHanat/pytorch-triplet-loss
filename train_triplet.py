@@ -1,9 +1,5 @@
-"""
-Name : train.py
-Author  : Hanat
-Time    : 2019-12-24 14:34
-Desc:
-"""
+import os
+
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
@@ -15,34 +11,46 @@ from networks.model_invoke import NetWorkInvoker
 
 
 def train():
-    use_cuda = conf['train_gpu_config']['use_cuda']
+    use_gpu = conf['train_gpu_config']['use_gpu']
     img_size = conf['train_parameter']['img_size']
 
     batch_size = conf['train_parameter']['batch_size']
     epoch = conf['train_parameter']['epoch']
     learning_rate = conf['train_parameter']['learning_rate']
+
     val_interval_step = conf['train_parameter']['val_interval_step']
     valid_iter_num = conf['train_parameter']['valid_iter_num']
-    gpu_enum = [gpu['gpu_enum'] for gpu in conf['train_gpu_config']['gpu_enum']]
+
     format_list = [formats['format_list'] for formats in conf['train_parameter']['format_list']]
     embedding = conf['train_parameter']['embedding']
     model_name = conf['train_parameter']['model_name']
-    pretrained = conf['train_parameter']['pretrained']
+
+    model_save_path = conf['path_config']['model_save_path']
+    pretrained_model = conf['path_config']['pretrained']
 
     train_data_path = conf['path_config']['train_data_path']
     valid_data_path = conf['path_config']['valid_data_path']
 
-    net = NetWorkInvoker(model_name=model_name, embedding=embedding, pretrained=pretrained)
-    optimizer = optim.Adadelta(net.parameters(), lr=learning_rate)
-    loss_triplet = TripletLoss(margin=0.5)
+    device = torch.device("cpu")
+    net = NetWorkInvoker(model_name=model_name, embedding=embedding, pretrained=pretrained_model)
+    if pretrained_model:
+        net.load_weight(pretrained_model, devices=device)
+    loss_triplet = TripletLoss(margin=1)
 
-    if use_cuda and len(gpu_enum) > 1:
-        net = torch.nn.DataParallel(net, device_ids=gpu_enum)
-        loss_triplet = loss_triplet.cuda()  # device=gpu_enum[0])
+    if use_gpu:
+        device = torch.device("cuda:0")
+        net = net.to(device)
+        loss_triplet = loss_triplet.to(device)
+    optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
-    elif use_cuda:
-        net = net.cuda()
-        loss_triplet = loss_triplet.cuda()
+    gpu_enum = [gpu['gpu_enum'] for gpu in conf['train_gpu_config']['gpu_enum']]
+    print(gpu_enum)
+
+    if use_gpu:
+        net = net.to(device)
+        if len(gpu_enum) > 1:
+            net = torch.nn.DataParallel(net, device_ids=gpu_enum)   # 转换为多GPU训练模型
+        loss_triplet = loss_triplet.to(device)
 
     data_gen_train = TripletDataset(train_data_path, format_list=format_list)
     data_gen_valdation = TripletDataset(train_data_path, format_list=format_list)
@@ -69,7 +77,7 @@ def train():
         print('epoch:{}/{}'.format(e, epoch))
         for t in range(train_step):
             anchor_img, pos_img, neg_img = train_iter.next()
-            if use_cuda:
+            if use_gpu:
                 anchor_img = anchor_img.cuda()
                 pos_img = pos_img.cuda()
                 neg_img = neg_img.cuda()
@@ -82,6 +90,10 @@ def train():
             loss.backward()
             optimizer.step()
             print('epoch: {}/{}, step: {}/{}, training_loss: {} \r'.format(e, epoch, t, train_step, loss))
+        if len(gpu_enum) > 1 and use_gpu:
+            torch.save(net.module.state_dict(), os.path.join(model_save_path, 'resnet50_feature_model_e{}.pth'.format(e)))
+        else:
+            torch.save(net.state_dict(), os.path.join(model_save_path, 'resnet50_feature_model_e{}.pth'.format(e)))
 
 
 train()

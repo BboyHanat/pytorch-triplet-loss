@@ -30,3 +30,7 @@ class NetWorkInvoker(nn.Module):
         x = torch.squeeze(x)
         y_pred = self._linear(x)
         return y_pred
+
+    def load_weight(self, pretrained_path, devices):
+        # if devices == torch.device('cpu'):
+        self.base_model.load_state_dict(torch.load(pretrained_path, map_location=devices), strict=False)

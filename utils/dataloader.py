@@ -68,34 +68,37 @@ class FastBaseTransform(torch.nn.Module):
 
 
 class DataGenerate(object):
-    def __init__(self, sample_sequence):
+    def __init__(self, sample_sequence, size=512):
         self.sample_sequence = sample_sequence
         self.length = len(sample_sequence)
-        self.seek = 0
-        self.transform_train = FastBaseTransform(size=512)
+        self.loc = 0
+        self.transform_train = FastBaseTransform(size=size)
 
     def __call__(self, *args, **kwargs):
         return self._get_next().__next__()
 
     def _get_next(self):
         while True:
-            if self.seek >= self.length:
-                self.seek = 0
+            if self.loc >= self.length:
+                self.loc = 0
                 random.shuffle(self.sample_sequence)
-            file_path = self.sample_sequence[self.seek]
+            file_path = self.sample_sequence[self.loc]
             img = cv2.imread(file_path)
             img = np.expand_dims(img, 0)
             img = torch.from_numpy(img).float()
             img = self.transform_train(img)
             yield img
 
-    def set_seek(self, seek):
-        self.seek = seek
+    def __len__(self):
+        return len(self.sample_sequence)
+
+    def set_seek(self, loc):
+        self.loc = loc
 
 
 class TripletDataset(Dataset):
 
-    def __init__(self, image_root, format_list, augment_num=1000, init_h=512, init_w=512):
+    def __init__(self, image_root, format_list, augment_num=1000, size=512):
         """
 
         :param txt: train txt file path
@@ -110,24 +113,20 @@ class TripletDataset(Dataset):
         self.class_images_generator = list()
         for class_path in class_names:
             path_to_image = os.path.join(image_root, class_path)
-            class_samples_generator = DataGenerate(self.get_class_samples(path_to_image, format_list))
+            class_samples_generator = DataGenerate(self.get_class_samples(path_to_image, format_list), size=size)
             self.class_images_generator.append(class_samples_generator)
 
         self.class_num = len(class_names)
         self.class_index = list(np.arange(self.class_num))
         self.augment_num = augment_num
 
-        self._transforms = transforms.Compose([transforms.Resize((init_h, init_w), interpolation=2),
-                                               transforms.ToTensor(),
-                                               transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]
-                                              )
-
-    def __getitem__(self, index):
+    def __getitem__(self, idx):
         """
 
         :param index:
         :return:
         """
+        index = idx % self.class_num
         loc1 = index if index < self.class_num else index % self.class_num     # seek of pos image
         loc2 = index + 1 if index + 1 < self.class_num else (index + 1) % self.class_num    # seek of pos image
         anchor_pos = self.class_index[loc1]
@@ -139,7 +138,7 @@ class TripletDataset(Dataset):
         return anchor_img, pos_img, neg_img
 
     def __len__(self):
-        return self.class_num
+        return sum([len(cls_gen) for cls_gen in self.class_images_generator])
 
     @staticmethod
     def get_class_names(image_root):
@@ -161,6 +160,6 @@ class TripletDataset(Dataset):
 if __name__ == '__main__':
     image_root = '../datasets'
     triplet = TripletDataset(image_root, format_list=['png'])
-
+    print(len(triplet))
     for index, t in enumerate(triplet):
         print(index, t[0].shape, t[1].shape, t[2].shape)
