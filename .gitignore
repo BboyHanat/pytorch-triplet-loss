@@ -1,6 +1,6 @@
 .idea
 weights
 venv
+test
 */**/.DS_Store
-datasets/test
 runs
