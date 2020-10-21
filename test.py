@@ -148,8 +148,7 @@ def test(image_path):
             output = net(img_tensor)
             output = output.data.cpu().numpy().squeeze()
 
-
-            output_2d = tsne.fit_transform(np.expand_dims(output, 0)).squeeze()
+            output_2d = tsne.fit_transform(np.expand_dims(output, -1)).squeeze()
             cls_outputs.append(output_2d)
             print(output_2d).size()
             print(output_2d)
