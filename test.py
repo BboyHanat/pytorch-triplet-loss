@@ -136,8 +136,10 @@ def test(image_path):
     device = torch.device('cuda:0')
     net = net.to(device)
     net = net.eval()
-    tsne = TSNE(n_components=2, learning_rate=100)
 
+    print("model load ok")
+
+    tsne = TSNE(n_components=2, learning_rate=100)
     cls_outputs = list()
     for cls_index in range(len(class_images_generators)):
         for img_index in range(len(class_images_generators[cls_index])):
@@ -162,9 +164,10 @@ def test(image_path):
         step = len(class_images_generators[cls_index])
         print(step, last_location)
         sns.scatterplot(x=output_2d[last_location:last_location+step, 0], y=output_2d[last_location:last_location+step, 1])
+        plt.savefig('{}.png'.format(str(cls_index)))
         last_location += step
 
-    plt.savefig('1.png')
+    plt.savefig('out.png')
 
 
 
