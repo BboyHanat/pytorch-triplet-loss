@@ -76,6 +76,8 @@ def train():
             preds_anchor = net(anchor_img)
             preds_pos = net(pos_img)
             preds_neg = net(neg_img)
+            net.zero_grad()
+
             loss = loss_triplet(preds_anchor, preds_pos, preds_neg)
             loss.backward()
             optimizer.step()

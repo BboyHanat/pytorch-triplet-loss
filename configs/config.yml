@@ -36,8 +36,8 @@ train_parameter:
   scale_resize_pad: True
 
 path_config:
-  train_data_path: datasets
-  valid_data_path: datasets
+  train_data_path: datasets/
+  valid_data_path: datasets/
   model_save_path: weights
   pretrained_model: weights/pretrained/
   lexicon_file_path: datasets/lexicon.txt
