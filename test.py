@@ -155,8 +155,10 @@ def test(image_path):
         cls_outputs = np.asarray(cls_outputs).squeeze()
         output_2d = tsne.fit_transform(cls_outputs).squeeze()
         print(output_2d.shape)
+        sns.scatterplot(data=output_2d)
+
         data_frame.append(output_2d)
-    sns.scatterplot(data=data_frame)
+
     plt.savefig('1.png')
 
 
