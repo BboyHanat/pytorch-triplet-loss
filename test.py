@@ -131,7 +131,7 @@ def test(image_path):
         class_images_generators.append(class_samples_generator)
 
     net = NetWorkInvoker(model_name='resnet50', embedding=512)
-    state_dict = torch.load("weights/resnet50_feature_model_e0", map_location=torch.device('cpu'))
+    state_dict = torch.load("weights/resnet50_feature_model_e0.pth", map_location=torch.device('cpu'))
     net.load_state_dict(state_dict, strict=True)
     device = torch.device('cuda:0')
     net = net.to(device)
