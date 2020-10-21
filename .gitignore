@@ -1,0 +1,6 @@
+.idea
+weights
+venv
+*/**/.DS_Store
+datasets/test
+runs
