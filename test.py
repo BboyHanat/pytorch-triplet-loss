@@ -143,7 +143,7 @@ def test(image_path):
         for img_index in range(len(class_images_generators[cls_index])):
             img_tensor = class_images_generators[cls_index]()
             img_tensor = img_tensor.to(img_tensor)
-            img_tensor = img_tensor.view((1, img_tensor.size()[0], img_tensor.size()[1], img_tensor.size()[2]))
+            img_tensor = img_tensor.unsqueeze(dim=0)
             output = net(img_tensor)
             output = output.data.cpu().numpy().squeeze()
             output_2d = tsne.fit_transform(output).squeeze()
