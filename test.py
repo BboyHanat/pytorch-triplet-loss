@@ -160,7 +160,7 @@ def test(image_path):
     last_location = 0
     for cls_index in range(len(class_images_generators)):
         step = len(class_images_generators[cls_index])
-        print(step)
+        print(step, last_location)
         sns.scatterplot(x=output_2d[last_location:last_location+step, 0], y=output_2d[last_location:last_location+step, 1])
         last_location += step
 
