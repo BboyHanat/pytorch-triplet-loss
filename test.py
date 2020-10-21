@@ -141,6 +141,7 @@ def test(image_path):
 
     tsne = TSNE(n_components=2, learning_rate=100)
     cls_outputs = list()
+    f, ax = plt.subplots(figsize=(14, 10))
     for cls_index in range(len(class_images_generators)):
         for img_index in range(len(class_images_generators[cls_index])):
             img_tensor = class_images_generators[cls_index]()
@@ -163,7 +164,8 @@ def test(image_path):
     for cls_index in range(len(class_images_generators)):
         step = len(class_images_generators[cls_index])
         print(step, last_location)
-        sns.scatterplot(x=output_2d[last_location:last_location+step, 0], y=output_2d[last_location:last_location+step, 1])
+        scatter = sns.scatterplot(x='y_pred', y='y_test', data=output_2d[last_location:last_location+step], alpha=0.8)
+        # sns.scatterplot(x=output_2d[last_location:last_location+step, 0], y=output_2d[last_location:last_location+step, 1])
         plt.savefig('{}.png'.format(str(cls_index)))
         last_location += step
 
