@@ -155,10 +155,10 @@ def test(image_path):
     output_2d = tsne.fit_transform(cls_outputs).squeeze()
     print(output_2d.shape)
 
-    output_2d[:, 0] = output_2d[:, 0] + np.abs(output_2d[:, 0].min())
-    output_2d[:, 0] = output_2d[:, 0] / output_2d[:, 0].max()
-    output_2d[:, 1] = output_2d[:, 1] + np.abs(output_2d[:, 1].min())
-    output_2d[:, 1] = output_2d[:, 1] / output_2d[:, 1].max()
+    # output_2d[:, 0] = output_2d[:, 0] + np.abs(output_2d[:, 0].min())
+    # output_2d[:, 0] = output_2d[:, 0] / output_2d[:, 0].max()
+    # output_2d[:, 1] = output_2d[:, 1] + np.abs(output_2d[:, 1].min())
+    # output_2d[:, 1] = output_2d[:, 1] / output_2d[:, 1].max()
 
     last_location = 0
     for cls_index in range(len(class_images_generators)):
