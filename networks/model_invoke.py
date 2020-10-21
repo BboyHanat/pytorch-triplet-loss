@@ -17,7 +17,7 @@ from torchvision import models
 
 class NetWorkInvoker(nn.Module):
 
-    def __init__(self, model_name='resnet50', embedding=512, pretrained=True):
+    def __init__(self, model_name='resnet50', embedding=512, pretrained=False):
         super(NetWorkInvoker, self).__init__()
 
         base_model = getattr(models, model_name)

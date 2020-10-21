@@ -32,7 +32,7 @@ def train():
     valid_data_path = conf['path_config']['valid_data_path']
 
     device = torch.device("cpu")
-    net = NetWorkInvoker(model_name=model_name, embedding=embedding, pretrained=pretrained_model)
+    net = NetWorkInvoker(model_name=model_name, embedding=embedding)
     if pretrained_model:
         net.load_weight(pretrained_model, devices=device)
     loss_triplet = TripletLoss(margin=1)
