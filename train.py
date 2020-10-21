@@ -14,9 +14,6 @@ from networks.triplet_loss import TripletLoss
 from networks.model_invoke import NetWorkInvoker
 
 
-
-
-
 def train():
     use_cuda = conf['train_gpu_config']['use_cuda']
     img_size = conf['train_parameter']['img_size']
@@ -40,8 +37,8 @@ def train():
     loss_triplet = TripletLoss(margin=0.5)
 
     if use_cuda and len(gpu_enum) > 1:
-        net = torch.nn.DataParallel(net, device_ids=gpu_enum)  ##转换为多GPU训练模型
-        loss_triplet = loss_triplet.cuda()#device=gpu_enum[0])
+        net = torch.nn.DataParallel(net, device_ids=gpu_enum)
+        loss_triplet = loss_triplet.cuda()  # device=gpu_enum[0])
 
     elif use_cuda:
         net = net.cuda()
@@ -83,10 +80,6 @@ def train():
             loss.backward()
             optimizer.step()
             print('epoch: {}/{}, step: {}/{}, training_loss: {} \r'.format(e, epoch, t, train_step, loss))
-
-
-
-
 
 
 train()
