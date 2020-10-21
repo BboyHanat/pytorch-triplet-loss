@@ -148,12 +148,13 @@ def test(image_path):
             output = net(img_tensor)
             output = output.data.cpu().numpy().squeeze()
 
-            output_2d = tsne.fit_transform(np.expand_dims(output, -1)).squeeze()
-            cls_outputs.append(output_2d)
-            print(output_2d.shape)
-            print(output_2d)
+
+            cls_outputs.append(output)
+            # print(output_2d.shape)
+            # print(output_2d)
         cls_outputs = np.asarray(cls_outputs).squeeze()
-        data_frame.append(cls_outputs)
+        output_2d = tsne.fit_transform(cls_outputs).squeeze()
+        data_frame.append(output_2d)
     sns.scatterplot(data=data_frame)
     plt.savefig('1.png')
 
